@@ -595,18 +595,20 @@
         language: currentPrefs().language || "en"
       };
 
-      updateStatus("Connected to demo stranger");
+      updateStatus("Connecting you to someone...");
       updatePartnerMeta();
       setOnlineCount("👥 1 user online + demo");
 
-      line("<b>Connected to demo stranger</b>");
-      line("<i>No real stranger found yet. Demo mode started.</i>");
+      line("<b>Connected</b>");
+      line("<i>No real stranger found yet. Demo chat started.</i>");
 
       setTimeout(() => {
-        if (demoMode) {
-          line("<b>Stranger:</b> Hi 👋");
-        }
+        if (demoMode) line("<b>Stranger:</b> Hi 👋");
       }, 1500);
+
+      setTimeout(() => {
+        if (demoMode) line("<b>Stranger:</b> Where are you from?");
+      }, 4500);
     }
 
     function stopDemoMode() {
@@ -617,10 +619,10 @@
       const text = userText.toLowerCase();
 
       if (text.includes("hi") || text.includes("hello")) return "Hello 👋";
-      if (text.includes("where")) return "I'm chatting from demo mode right now.";
-      if (text.includes("name")) return "I'm your TalkX demo stranger.";
+      if (text.includes("where")) return "I'm here while real users join.";
+      if (text.includes("name")) return "I'm your TalkX demo chat.";
       if (text.includes("bye")) return "Bye 👋";
-      if (text.includes("india")) return "Nice, India has many TalkX users joining at night.";
+      if (text.includes("india")) return "Nice, many users join from India at night.";
       return ["Nice 😄", "Tell me more.", "Cool!", "That sounds good.", "Where are you from?"][Math.floor(Math.random() * 5)];
     }
 
@@ -908,4 +910,4 @@
     });
   </script>
 </body>
-</html> 
+</html>
