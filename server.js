@@ -13,70 +13,72 @@ const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
-  }
+  },
+  pingInterval: 25000,
+  pingTimeout: 60000
 });
 
 let waitingUser = null;
 
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+function clearPartner(socket) {
+  if (socket.partner) {
+    const partner = socket.partner;
+    socket.partner = null;
 
-  if (waitingUser && waitingUser.connected) {
-    socket.partner = waitingUser;
-    waitingUser.partner = socket;
+    if (partner.connected) {
+      partner.partner = null;
+      partner.emit("partner-disconnected");
+      if (!waitingUser) {
+        waitingUser = partner;
+        partner.emit("waiting");
+      }
+    }
+  }
+}
 
-    socket.emit("connected");
-    waitingUser.emit("connected");
+function pairUsers(a, b) {
+  a.partner = b;
+  b.partner = a;
+  a.emit("connected");
+  b.emit("connected");
+}
 
+function putInQueue(socket) {
+  socket.partner = null;
+
+  if (waitingUser && waitingUser !== socket && waitingUser.connected && !waitingUser.partner) {
+    const other = waitingUser;
     waitingUser = null;
+    pairUsers(socket, other);
   } else {
     waitingUser = socket;
     socket.emit("waiting");
   }
+}
+
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+  putInQueue(socket);
 
   socket.on("message", (msg) => {
+    const text = typeof msg === "string" ? msg.trim() : "";
+    if (!text) return;
+
     if (socket.partner && socket.partner.connected) {
-      socket.partner.emit("message", msg);
+      socket.partner.emit("message", text);
     }
   });
 
   socket.on("next", () => {
-    if (socket.partner && socket.partner.connected) {
-      socket.partner.emit("partner-disconnected");
-      socket.partner.partner = null;
-      socket.partner.emit("waiting");
-    }
-
-    socket.partner = null;
-
-    if (waitingUser && waitingUser !== socket && waitingUser.connected) {
-      socket.partner = waitingUser;
-      waitingUser.partner = socket;
-
-      socket.emit("connected");
-      waitingUser.emit("connected");
-
-      waitingUser = null;
-    } else {
-      waitingUser = socket;
-      socket.emit("waiting");
-    }
+    if (waitingUser === socket) waitingUser = null;
+    clearPartner(socket);
+    putInQueue(socket);
   });
 
   socket.on("disconnect", () => {
-    if (waitingUser === socket) {
-      waitingUser = null;
-    }
-
-    if (socket.partner && socket.partner.connected) {
-      socket.partner.emit("partner-disconnected");
-      socket.partner.partner = null;
-
-      if (!waitingUser) {
-        waitingUser = socket.partner;
-        socket.partner.emit("waiting");
-      }
-    }
+    console.log("User disconnected:", socket.id);
+    if (waitingUser === socket) waitingUser = null;
+    clearPartner(socket);
   });
 });
 
