@@ -2,31 +2,50 @@
 <html lang="en">
 <head>
   <meta name="robots" content="index, follow">
-  <meta name="description" content="TalkX is a free anonymous chat platform to talk with strangers in India and worldwide.">
-  <meta name="keywords" content="chat with strangers India, anonymous chat India, random chat, talkx">
+  <meta name="description" content="TalkX is a free anonymous voice and text chat platform to talk with strangers in India and worldwide.">
+  <meta name="keywords" content="chat with strangers India, anonymous voice chat, random chat, talkx, stranger voice call">
   <meta name="google-site-verification" content="MNw4m3CjpORKt1HCIroQtfQmh_MIsu6zCpMhah14JPM" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TalkX - Chat with strangers in India</title>
+  <title>TalkX - Anonymous Voice & Chat Worldwide</title>
+  <link rel="canonical" href="https://talk-x-alpha.vercel.app">
 
   <style>
     * {
       box-sizing: border-box;
     }
 
+    :root {
+      --bg1: #0a1028;
+      --bg2: #151842;
+      --bg3: #23276c;
+      --card: rgba(10, 13, 34, 0.78);
+      --line: rgba(255,255,255,0.10);
+      --text: #ffffff;
+      --muted: #b9c3ff;
+      --muted2: #96a2e7;
+      --primary: #ff8b2c;
+      --primary2: #ffb03a;
+      --success: #2fc86f;
+      --danger: #ff5a5a;
+      --warn: #f3b33e;
+      --blue: #7080ff;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      color: white;
-      background:
-        radial-gradient(circle at top, rgba(88, 99, 255, 0.25), transparent 30%),
-        linear-gradient(180deg, #11184a 0%, #171538 45%, #0c1024 100%);
       min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(101, 112, 255, 0.30), transparent 24%),
+        radial-gradient(circle at 80% 20%, rgba(71, 86, 255, 0.18), transparent 20%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 40%, #09101e 100%);
       padding: 16px;
     }
 
     .wrap {
-      max-width: 430px;
+      max-width: 440px;
       margin: 0 auto;
     }
 
@@ -34,7 +53,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 0 18px;
+      margin-bottom: 18px;
     }
 
     .brand {
@@ -44,50 +63,45 @@
     }
 
     .brand-logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      border: 2px solid rgba(255,255,255,0.6);
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.55);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 24px;
       font-weight: 700;
-      font-size: 22px;
-      box-shadow: 0 0 18px rgba(99, 102, 241, 0.35);
       background: rgba(255,255,255,0.04);
-    }
-
-    .brand-text {
-      line-height: 1.1;
+      box-shadow: 0 0 20px rgba(97, 107, 255, 0.26);
     }
 
     .brand-text h1 {
       margin: 0;
-      font-size: 24px;
-      letter-spacing: 0.4px;
+      font-size: 26px;
+      letter-spacing: 0.5px;
     }
 
     .brand-text p {
-      margin: 3px 0 0;
-      color: #bfc7ff;
+      margin: 4px 0 0;
       font-size: 12px;
+      color: var(--muted);
     }
 
     .menu {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.15);
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.14);
       display: flex;
       align-items: center;
       justify-content: center;
       background: rgba(255,255,255,0.05);
-      font-size: 24px;
+      font-size: 22px;
     }
 
     .hero {
       text-align: center;
-      margin-top: 10px;
       margin-bottom: 18px;
     }
 
@@ -95,26 +109,26 @@
       display: inline-block;
       padding: 10px 16px;
       border-radius: 999px;
-      border: 1px solid rgba(109, 133, 255, 0.6);
+      border: 1px solid rgba(119, 135, 255, 0.55);
       background: rgba(77, 102, 255, 0.12);
-      color: #aebdff;
+      color: #bfd0ff;
       font-size: 13px;
       margin-bottom: 18px;
       box-shadow: 0 0 18px rgba(88, 99, 255, 0.18);
     }
 
     .hero-circle {
-      width: 230px;
-      height: 230px;
+      width: 220px;
+      height: 220px;
       margin: 0 auto 20px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       background:
-        radial-gradient(circle at 35% 30%, #707cff, #3f46d4 58%, #242a7d 100%);
+        radial-gradient(circle at 35% 30%, #7884ff, #4450dc 56%, #272d83 100%);
       box-shadow:
-        0 0 40px rgba(104, 112, 255, 0.28),
+        0 0 45px rgba(104, 112, 255, 0.26),
         inset 0 0 35px rgba(255,255,255,0.08);
       font-size: 72px;
       font-weight: 700;
@@ -123,74 +137,72 @@
 
     .hero h2 {
       margin: 0;
-      font-size: 42px;
+      font-size: 40px;
       line-height: 1.05;
       font-weight: 800;
     }
 
     .hero h2 span {
-      color: #8f96ff;
       display: block;
+      color: #9299ff;
     }
 
     .hero-desc {
-      margin: 16px auto 0;
-      color: #c7cdf8;
-      font-size: 17px;
-      line-height: 1.6;
       max-width: 360px;
+      margin: 16px auto 0;
+      color: #cdd3ff;
+      line-height: 1.6;
+      font-size: 16px;
     }
 
-    .panel {
-      background: rgba(13, 16, 40, 0.78);
-      border: 1px solid rgba(255,255,255,0.10);
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
       border-radius: 24px;
       padding: 18px;
       margin-bottom: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+      backdrop-filter: blur(8px);
     }
 
-    .status-line {
+    .status {
       text-align: center;
-      font-size: 16px;
-      color: #d0d4ff;
-      margin-bottom: 10px;
-      min-height: 22px;
+      font-size: 17px;
+      color: #d6dbff;
+      min-height: 24px;
+      margin-bottom: 8px;
     }
 
     .online-count {
       text-align: center;
-      color: #9fb0ff;
-      margin-bottom: 10px;
+      color: #90a3ff;
       font-size: 14px;
+      margin-bottom: 10px;
     }
 
     .partner-meta {
       text-align: center;
+      color: var(--muted2);
       font-size: 13px;
-      color: #98a1dd;
-      margin-bottom: 10px;
       min-height: 18px;
     }
 
-    .filters {
+    .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 14px;
     }
 
-    .filters .full {
+    .full {
       grid-column: 1 / -1;
     }
 
     label {
       display: block;
-      font-size: 13px;
-      color: #bcc3ff;
-      margin-bottom: 6px;
       text-align: left;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
     }
 
     input, select, button {
@@ -198,7 +210,7 @@
       border: none;
       outline: none;
       border-radius: 14px;
-      padding: 14px 14px;
+      padding: 14px;
       font-size: 15px;
       font-family: inherit;
     }
@@ -213,65 +225,89 @@
       color: black;
     }
 
-    .big-btn {
-      background: linear-gradient(90deg, #ff7d2d, #ffb03a);
+    .start-btn {
+      margin-top: 14px;
+      background: linear-gradient(90deg, var(--primary), var(--primary2));
       color: white;
-      font-weight: 700;
       font-size: 18px;
-      box-shadow: 0 8px 28px rgba(255, 147, 44, 0.28);
+      font-weight: 700;
+      box-shadow: 0 10px 28px rgba(255, 147, 44, 0.24);
     }
 
-    .controls-grid {
+    .tools {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
-      text-align: center;
       margin-top: 16px;
     }
 
-    .icon-btn {
+    .tool-btn {
+      min-height: 96px;
+      border-radius: 22px;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.08);
       color: white;
-      min-height: 96px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: center;
+      flex-direction: column;
       gap: 8px;
-      border-radius: 20px;
+      padding: 12px 8px;
     }
 
-    .icon-btn.primary {
-      background: rgba(50, 197, 107, 0.16);
-      border: 1px solid rgba(50, 197, 107, 0.25);
+    .tool-btn.primary {
+      background: rgba(50, 197, 107, 0.18);
+      border: 1px solid rgba(50, 197, 107, 0.22);
     }
 
-    .icon-btn.warn {
-      background: rgba(255, 183, 0, 0.14);
-      border: 1px solid rgba(255, 183, 0, 0.20);
+    .tool-btn.warn {
+      background: rgba(243, 179, 62, 0.16);
+      border: 1px solid rgba(243, 179, 62, 0.20);
     }
 
-    .icon {
+    .tool-btn.danger {
+      background: rgba(255, 90, 90, 0.12);
+      border: 1px solid rgba(255, 90, 90, 0.16);
+    }
+
+    .tool-icon {
       font-size: 28px;
     }
 
-    .icon-label {
+    .tool-label {
       font-size: 14px;
     }
 
+    .small {
+      color: var(--muted2);
+      font-size: 13px;
+      text-align: center;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
     #chat {
-      height: 250px;
+      height: 260px;
       overflow-y: auto;
-      background: rgba(0,0,0,0.16);
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
       padding: 14px;
-      border: 1px solid rgba(255,255,255,0.08);
       text-align: left;
       line-height: 1.5;
     }
 
     #chat p {
       margin: 0 0 12px;
+      word-break: break-word;
+    }
+
+    #typing {
+      color: #9fb0ff;
+      font-size: 13px;
+      min-height: 18px;
+      text-align: left;
+      margin-top: 8px;
     }
 
     .message-row {
@@ -282,24 +318,9 @@
     }
 
     .send-btn {
-      background: #2fb15b;
+      background: var(--success);
       color: white;
       font-weight: 700;
-    }
-
-    .small-text {
-      color: #aeb4e7;
-      font-size: 13px;
-      text-align: center;
-      margin-top: 10px;
-    }
-
-    #typing {
-      color: #9fb0ff;
-      font-size: 13px;
-      min-height: 18px;
-      margin-top: 8px;
-      text-align: left;
     }
 
     audio {
@@ -308,27 +329,34 @@
       border-radius: 12px;
     }
 
+    .helper {
+      font-size: 13px;
+      color: var(--muted2);
+      line-height: 1.5;
+      text-align: center;
+    }
+
     @media (max-width: 480px) {
-      .controls-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .filters {
-        grid-template-columns: 1fr;
-      }
-
-      .message-row {
-        grid-template-columns: 1fr;
+      .hero-circle {
+        width: 190px;
+        height: 190px;
+        font-size: 60px;
       }
 
       .hero h2 {
         font-size: 34px;
       }
 
-      .hero-circle {
-        width: 190px;
-        height: 190px;
-        font-size: 60px;
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .tools {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .message-row {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -356,12 +384,12 @@
       </div>
     </div>
 
-    <div class="panel">
-      <div class="status-line" id="status">Not connected</div>
+    <div class="card">
+      <div class="status" id="status">Not connected</div>
       <div class="online-count" id="onlineCount">👥 12 users online</div>
       <div class="partner-meta" id="partnerMeta">No stranger yet</div>
 
-      <div class="filters">
+      <div class="grid-2" style="margin-top:14px;">
         <div>
           <label for="country">Your country</label>
           <select id="country">
@@ -415,35 +443,35 @@
         </div>
       </div>
 
-      <button class="big-btn" id="startBtn">Start Voice + Chat</button>
+      <button class="start-btn" id="startBtn">Start Voice + Chat</button>
 
-      <div class="controls-grid">
-        <button class="icon-btn primary" id="voiceBtn">
-          <div class="icon">📞</div>
-          <div class="icon-label">Call</div>
+      <div class="tools">
+        <button class="tool-btn primary" id="voiceBtn">
+          <div class="tool-icon">📞</div>
+          <div class="tool-label">Call</div>
         </button>
 
-        <button class="icon-btn" id="endVoiceBtn">
-          <div class="icon">🎙️</div>
-          <div class="icon-label">Mute / End</div>
+        <button class="tool-btn" id="endVoiceBtn">
+          <div class="tool-icon">🎙️</div>
+          <div class="tool-label">End</div>
         </button>
 
-        <button class="icon-btn" id="nextBtn">
-          <div class="icon">➕</div>
-          <div class="icon-label">Next</div>
+        <button class="tool-btn" id="nextBtn">
+          <div class="tool-icon">➕</div>
+          <div class="tool-label">Next</div>
         </button>
 
-        <button class="icon-btn warn" id="reportBtn">
-          <div class="icon">⚠️</div>
-          <div class="icon-label">Report</div>
+        <button class="tool-btn warn" id="reportBtn">
+          <div class="tool-icon">⚠️</div>
+          <div class="tool-label">Report</div>
         </button>
       </div>
 
-      <div class="small-text">Allow microphone access when your browser asks.</div>
+      <div class="small">Allow microphone access when your browser asks.</div>
       <audio id="remoteAudio" autoplay playsinline controls></audio>
     </div>
 
-    <div class="panel">
+    <div class="card">
       <div id="chat"></div>
       <div id="typing"></div>
 
@@ -452,13 +480,13 @@
         <button class="send-btn" id="sendBtn">Send</button>
       </div>
 
-      <div class="small-text">Hindi ↔ English translation supported in this version.</div>
+      <div class="small">Hindi ↔ English translation supported in this version.</div>
     </div>
 
-    <div class="panel">
-      <div class="small-text">Be respectful. Do not share personal information. Block or report bad users.</div>
+    <div class="card">
+      <div class="helper">Be respectful. Do not share personal information. Block or report bad users.</div>
       <div style="margin-top:12px;">
-        <button class="icon-btn" id="blockBtn" style="min-height:auto;padding:14px;">Block user</button>
+        <button class="tool-btn danger" id="blockBtn" style="min-height:auto;padding:14px;">Block user</button>
       </div>
     </div>
   </div>
@@ -504,6 +532,14 @@
       statusEl.innerText = text;
     }
 
+    function updateFakeUsers() {
+      const count = Math.floor(Math.random() * 20) + 10;
+      document.getElementById("onlineCount").innerText = "👥 " + count + " users online";
+    }
+
+    setInterval(updateFakeUsers, 3000);
+    updateFakeUsers();
+
     function currentPrefs() {
       return {
         country: document.getElementById("country").value,
@@ -524,15 +560,6 @@
         `Interest: ${partnerProfile.interest || "Any"} | ` +
         `Language: ${partnerProfile.language || "en"}`;
     }
-
-    function updateFakeUsers() {
-      const count = Math.floor(Math.random() * 20) + 10;
-      document.getElementById("onlineCount").innerText =
-        "👥 " + count + " users online";
-    }
-
-    setInterval(updateFakeUsers, 3000);
-    updateFakeUsers();
 
     async function translateIfNeeded(text) {
       const auto = document.getElementById("autoTranslate").value;
