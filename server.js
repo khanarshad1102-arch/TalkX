@@ -29,20 +29,19 @@ function isValidSocket(socket) {
 }
 
 function areCompatible(a, b) {
-  const aCountry = (a.data.targetCountry || "").trim();
-  const bCountry = (b.data.country || "").trim();
+  const aTargetCountry = String(a.data.targetCountry || "").trim();
+  const bCountry = String(b.data.country || "").trim();
 
-  const bTargetCountry = (b.data.targetCountry || "").trim();
-  const aUserCountry = (a.data.country || "").trim();
+  const bTargetCountry = String(b.data.targetCountry || "").trim();
+  const aCountry = String(a.data.country || "").trim();
 
-  const aInterest = (a.data.interest || "").trim().toLowerCase();
-  const bInterest = (b.data.interest || "").trim().toLowerCase();
+  const aInterest = String(a.data.interest || "").trim().toLowerCase();
+  const bInterest = String(b.data.interest || "").trim().toLowerCase();
 
-  const countryMatchA = !aCountry || aCountry === bCountry;
-  const countryMatchB = !bTargetCountry || bTargetCountry === aUserCountry;
+  const countryMatchA = !aTargetCountry || aTargetCountry === bCountry;
+  const countryMatchB = !bTargetCountry || bTargetCountry === aCountry;
 
-  const interestMatch =
-    !aInterest || !bInterest || aInterest === bInterest;
+  const interestMatch = !aInterest || !bInterest || aInterest === bInterest;
 
   return countryMatchA && countryMatchB && interestMatch;
 }
@@ -96,7 +95,6 @@ function enqueueOrMatch(socket) {
 
 function disconnectPair(socket, reason = "partner-disconnected") {
   const partner = getPartner(socket);
-
   socket.data.partnerId = null;
 
   if (partner && isValidSocket(partner)) {
