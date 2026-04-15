@@ -382,7 +382,7 @@
 
     <div class="card">
       <div class="status" id="status">Not connected</div>
-      <div class="online-count" id="onlineCount">👥 1 users online</div>
+      <div class="online-count" id="onlineCount">👥 1 user online</div>
       <div class="partner-meta" id="partnerMeta">No stranger yet</div>
 
       <div class="grid-2" style="margin-top:14px;">
@@ -506,10 +506,13 @@
     const typingEl = document.getElementById("typing");
     const msgEl = document.getElementById("msg");
     const remoteAudio = document.getElementById("remoteAudio");
+    const onlineCountEl = document.getElementById("onlineCount");
 
     let partnerProfile = null;
     let localStream = null;
     let peerConnection = null;
+    let demoMode = false;
+    let waitingTimer = null;
 
     const rtcConfig = {
       iceServers: [
@@ -525,6 +528,10 @@
 
     function updateStatus(text) {
       statusEl.innerText = text;
+    }
+
+    function setOnlineCount(text) {
+      onlineCountEl.innerText = text;
     }
 
     function currentPrefs() {
@@ -546,6 +553,13 @@
         `Stranger country: ${partnerProfile.country || "Unknown"} | ` +
         `Interest: ${partnerProfile.interest || "Any"} | ` +
         `Language: ${partnerProfile.language || "en"}`;
+    }
+
+    function clearWaitingTimer() {
+      if (waitingTimer) {
+        clearTimeout(waitingTimer);
+        waitingTimer = null;
+      }
     }
 
     async function translateIfNeeded(text) {
@@ -572,17 +586,49 @@
       }
     }
 
+    function startDemoMode() {
+      demoMode = true;
+
+      partnerProfile = {
+        country: currentPrefs().targetCountry || "India",
+        interest: currentPrefs().interest || "chat",
+        language: currentPrefs().language || "en"
+      };
+
+      updateStatus("Connected to demo stranger");
+      updatePartnerMeta();
+      setOnlineCount("👥 1 user online + demo");
+
+      line("<b>Connected to demo stranger</b>");
+      line("<i>No real stranger found yet. Demo mode started.</i>");
+
+      setTimeout(() => {
+        if (demoMode) {
+          line("<b>Stranger:</b> Hi 👋");
+        }
+      }, 1500);
+    }
+
+    function stopDemoMode() {
+      demoMode = false;
+    }
+
+    function getDemoReply(userText) {
+      const text = userText.toLowerCase();
+
+      if (text.includes("hi") || text.includes("hello")) return "Hello 👋";
+      if (text.includes("where")) return "I'm chatting from demo mode right now.";
+      if (text.includes("name")) return "I'm your TalkX demo stranger.";
+      if (text.includes("bye")) return "Bye 👋";
+      if (text.includes("india")) return "Nice, India has many TalkX users joining at night.";
+      return ["Nice 😄", "Tell me more.", "Cool!", "That sounds good.", "Where are you from?"][Math.floor(Math.random() * 5)];
+    }
+
     async function sendMessage() {
       const text = msgEl.value.trim();
       if (!text) return;
 
       const translatedText = await translateIfNeeded(text);
-
-      socket.emit("message", {
-        text,
-        translatedText,
-        fromLanguage: currentPrefs().language
-      });
 
       line(
         `<b>You:</b> ${text}` +
@@ -590,14 +636,39 @@
       );
 
       msgEl.value = "";
+
+      if (demoMode) {
+        setTimeout(() => {
+          line(`<b>Stranger:</b> ${getDemoReply(text)}`);
+        }, 1200);
+        return;
+      }
+
+      socket.emit("message", {
+        text,
+        translatedText,
+        fromLanguage: currentPrefs().language
+      });
     }
 
     function joinQueue() {
+      stopDemoMode();
+      clearWaitingTimer();
+
       partnerProfile = null;
       updatePartnerMeta();
       chatEl.innerHTML = "";
-      updateStatus("Looking for stranger...");
+
+      updateStatus("Finding someone online...");
+      setOnlineCount("👥 1 user online");
+
       socket.emit("join-queue", currentPrefs());
+
+      waitingTimer = setTimeout(() => {
+        if (!partnerProfile) {
+          startDemoMode();
+        }
+      }, 8000);
     }
 
     function createPeerConnection() {
@@ -606,7 +677,7 @@
       peerConnection = new RTCPeerConnection(rtcConfig);
 
       peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
+        if (event.candidate && !demoMode) {
           socket.emit("webrtc-ice-candidate", event.candidate);
         }
       };
@@ -635,6 +706,11 @@
     }
 
     async function startVoiceCall() {
+      if (demoMode) {
+        line("<i>Voice call is only available with a real stranger.</i>");
+        return;
+      }
+
       try {
         await ensureLocalAudio();
         createPeerConnection();
@@ -659,26 +735,32 @@
         remoteAudio.srcObject = null;
       }
 
-      socket.emit("voice-ended");
+      if (!demoMode) {
+        socket.emit("voice-ended");
+      }
+
       line("<i>Voice call ended</i>");
     }
 
     socket.on("connect", () => {
       updateStatus("Connected to server");
-      document.getElementById("onlineCount").innerText = "👥 1 users online";
+      setOnlineCount("👥 1 user online");
     });
 
     socket.on("waiting", () => {
       updateStatus("Waiting for stranger...");
-      document.getElementById("onlineCount").innerText = "👥 1 users online";
+      setOnlineCount("👥 1 user online");
     });
 
     socket.on("connected", (payload) => {
+      stopDemoMode();
+      clearWaitingTimer();
+
       partnerProfile = payload?.partnerProfile || null;
       updateStatus("Connected to stranger");
       updatePartnerMeta();
+      setOnlineCount("👥 2 users online");
       line("<b>Connected to stranger</b>");
-      document.getElementById("onlineCount").innerText = "👥 2 users online";
     });
 
     socket.on("message", (payload) => {
@@ -692,21 +774,23 @@
     });
 
     socket.on("partner-disconnected", () => {
+      stopDemoMode();
       partnerProfile = null;
       updatePartnerMeta();
       updateStatus("Stranger left. Looking for new stranger...");
+      setOnlineCount("👥 1 user online");
       line("<i>Stranger disconnected</i>");
       endVoiceCall();
-      document.getElementById("onlineCount").innerText = "👥 1 users online";
     });
 
     socket.on("blocked-by-partner", () => {
+      stopDemoMode();
       partnerProfile = null;
       updatePartnerMeta();
       updateStatus("Partner left. Looking for new stranger...");
+      setOnlineCount("👥 1 user online");
       line("<i>Partner blocked or skipped</i>");
       endVoiceCall();
-      document.getElementById("onlineCount").innerText = "👥 1 users online";
     });
 
     socket.on("report-saved", () => {
@@ -722,7 +806,7 @@
 
     socket.on("disconnect", () => {
       updateStatus("Disconnected. Reconnecting...");
-      document.getElementById("onlineCount").innerText = "👥 0 users online";
+      setOnlineCount("👥 0 users online");
     });
 
     socket.on("webrtc-offer", async (offer) => {
@@ -776,10 +860,18 @@
     document.getElementById("startBtn").onclick = joinQueue;
 
     document.getElementById("nextBtn").onclick = () => {
+      stopDemoMode();
+      clearWaitingTimer();
       socket.emit("next");
       line("<i>Searching for next stranger...</i>");
       updateStatus("Looking for stranger...");
-      document.getElementById("onlineCount").innerText = "👥 1 users online";
+      setOnlineCount("👥 1 user online");
+
+      waitingTimer = setTimeout(() => {
+        if (!partnerProfile) {
+          startDemoMode();
+        }
+      }, 8000);
     };
 
     document.getElementById("sendBtn").onclick = sendMessage;
@@ -787,17 +879,31 @@
     document.getElementById("endVoiceBtn").onclick = endVoiceCall;
 
     document.getElementById("reportBtn").onclick = () => {
+      if (demoMode) {
+        line("<i>Demo user cannot be reported.</i>");
+        return;
+      }
       socket.emit("report-user", { reason: "user report" });
     };
 
     document.getElementById("blockBtn").onclick = () => {
+      if (demoMode) {
+        stopDemoMode();
+        partnerProfile = null;
+        updatePartnerMeta();
+        updateStatus("Looking for stranger...");
+        setOnlineCount("👥 1 user online");
+        line("<i>Demo user closed</i>");
+        return;
+      }
+
       socket.emit("block-user");
       updateStatus("Looking for stranger...");
-      document.getElementById("onlineCount").innerText = "👥 1 users online";
+      setOnlineCount("👥 1 user online");
     };
 
     msgEl.addEventListener("keydown", (e) => {
-      socket.emit("typing");
+      if (!demoMode) socket.emit("typing");
       if (e.key === "Enter") sendMessage();
     });
   </script>
