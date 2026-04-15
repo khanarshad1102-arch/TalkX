@@ -1,160 +1,504 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TalkX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TalkX Pro</title>
   <style>
     body {
       background: #0f0f0f;
       color: white;
-      text-align: center;
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 16px;
     }
     .wrap {
-      max-width: 700px;
+      max-width: 900px;
       margin: 0 auto;
     }
-    #status {
-      margin: 12px 0;
-      color: #bbbbbb;
-      min-height: 28px;
+    .card {
+      background: #121212;
+      border: 1px solid #2b2b2b;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    h1, h2, p {
+      margin-top: 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 700px) {
+      .grid, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+    input, select, button, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #343434;
+      background: #1a1a1a;
+      color: white;
+      margin-top: 6px;
+    }
+    button {
+      cursor: pointer;
+    }
+    .primary {
+      background: #1f7a36;
+      border: none;
+    }
+    .secondary {
+      background: #373737;
+      border: none;
+    }
+    .danger {
+      background: #7c2222;
+      border: none;
     }
     #chat {
-      height: 320px;
+      height: 330px;
       overflow: auto;
-      border: 1px solid #333;
-      margin: 20px 0;
+      background: #0d0d0d;
+      border: 1px solid #2e2e2e;
+      border-radius: 12px;
       padding: 12px;
       text-align: left;
-      background: #111;
-      border-radius: 10px;
     }
-    .controls {
+    .row {
       display: flex;
       gap: 8px;
     }
-    input {
+    .row > * {
       flex: 1;
-      padding: 12px;
-      background: #1a1a1a;
-      color: white;
-      border: 1px solid #333;
-      border-radius: 8px;
     }
-    button {
-      padding: 12px 14px;
-      background: #2e7d32;
-      color: white;
-      border: none;
-      border-radius: 8px;
+    #status {
+      color: #c6c6c6;
+      min-height: 24px;
     }
-    .secondary {
-      background: #444;
-    }
-    .note {
-      margin-top: 14px;
-      color: #aaa;
+    .small {
+      color: #a6a6a6;
       font-size: 14px;
+    }
+    audio {
+      width: 100%;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="card">
+      <h1>TalkX Pro 🌍</h1>
+      <p>Anonymous stranger chat with voice, filters, translation, and safety tools.</p>
 
-<div class="wrap">
-  <h1>TalkX 🌍</h1>
-  <p>Anonymous Global Chat</p>
+      <div class="grid-3">
+        <div>
+          <label>Your country</label>
+          <select id="country">
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+            <option value="Canada">Canada</option>
+            <option value="Germany">Germany</option>
+            <option value="Japan">Japan</option>
+            <option value="UAE">UAE</option>
+            <option value="Australia">Australia</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
-  <div id="status">Connecting...</div>
-  <div id="chat"></div>
+        <div>
+          <label>Find people from</label>
+          <select id="targetCountry">
+            <option value="">Any country</option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+            <option value="Canada">Canada</option>
+            <option value="Germany">Germany</option>
+            <option value="Japan">Japan</option>
+            <option value="UAE">UAE</option>
+            <option value="Australia">Australia</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
-  <div class="controls">
-    <input id="msg" placeholder="Type message..." />
-    <button onclick="send()">Send</button>
-    <button class="secondary" onclick="nextUser()">Next</button>
+        <div>
+          <label>Your language</label>
+          <select id="language">
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label>Interest</label>
+          <input id="interest" placeholder="music, gaming, travel" />
+        </div>
+        <div>
+          <label>Auto translate</label>
+          <select id="autoTranslate">
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px;">
+        <button class="primary" id="startBtn">Start chat</button>
+        <button class="secondary" id="nextBtn">Next stranger</button>
+      </div>
+
+      <p class="small">Translation supports Hindi ↔ English in this version.</p>
+    </div>
+
+    <div class="card">
+      <h2>Status</h2>
+      <div id="status">Not connected</div>
+      <div id="partnerMeta" class="small">No stranger yet</div>
+    </div>
+
+    <div class="card">
+      <h2>Voice chat</h2>
+      <div class="row">
+        <button class="primary" id="voiceBtn">Start voice call</button>
+        <button class="secondary" id="endVoiceBtn">End voice call</button>
+      </div>
+      <audio id="remoteAudio" autoplay playsinline controls></audio>
+      <div class="small">Allow microphone access when your browser asks.</div>
+    </div>
+
+    <div class="card">
+      <h2>Chat</h2>
+      <div id="chat"></div>
+      <div class="row" style="margin-top:10px;">
+        <input id="msg" placeholder="Type message..." />
+        <button class="primary" id="sendBtn">Send</button>
+      </div>
+      <div class="small" id="typing"></div>
+    </div>
+
+    <div class="card">
+      <h2>Safety</h2>
+      <div class="row">
+        <button class="secondary" id="reportBtn">Report</button>
+        <button class="danger" id="blockBtn">Block</button>
+      </div>
+    </div>
   </div>
 
-  <div class="note">Voice chat will be added next 🚀</div>
-</div>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    const BACKEND_URL = "https://talkx.onrender.com";
 
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    const socket = io(BACKEND_URL, {
+      transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000
+    });
 
-<script>
-const socket = io("https://talkx.onrender.com", {
-  transports: ["websocket", "polling"],
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-  reconnectionDelayMax: 5000,
-  timeout: 20000
-});
+    const statusEl = document.getElementById("status");
+    const partnerMetaEl = document.getElementById("partnerMeta");
+    const chatEl = document.getElementById("chat");
+    const typingEl = document.getElementById("typing");
+    const msgEl = document.getElementById("msg");
+    const remoteAudio = document.getElementById("remoteAudio");
 
-const chat = document.getElementById("chat");
-const statusEl = document.getElementById("status");
-const input = document.getElementById("msg");
+    let partnerProfile = null;
+    let localStream = null;
+    let peerConnection = null;
 
-function addLine(html) {
-  chat.innerHTML += "<p>" + html + "</p>";
-  chat.scrollTop = chat.scrollHeight;
-}
+    const rtcConfig = {
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun1.l.google.com:19302" }
+      ]
+    };
 
-socket.on("connect", () => {
-  statusEl.innerText = "Connected to server";
-  addLine("<i>Connected to server</i>");
-});
+    function line(html) {
+      chatEl.innerHTML += `<p>${html}</p>`;
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
 
-socket.on("waiting", () => {
-  statusEl.innerText = "Waiting for stranger...";
-  addLine("<i>Waiting for stranger...</i>");
-});
+    function updateStatus(text) {
+      statusEl.innerText = text;
+    }
 
-socket.on("connected", () => {
-  statusEl.innerText = "Connected to stranger";
-  addLine("<b>Connected to stranger</b>");
-});
+    function currentPrefs() {
+      return {
+        country: document.getElementById("country").value,
+        targetCountry: document.getElementById("targetCountry").value,
+        interest: document.getElementById("interest").value.trim(),
+        language: document.getElementById("language").value
+      };
+    }
 
-socket.on("message", (msg) => {
-  addLine("<b>Stranger:</b> " + msg);
-});
+    function updatePartnerMeta() {
+      if (!partnerProfile) {
+        partnerMetaEl.innerText = "No stranger yet";
+        return;
+      }
 
-socket.on("partner-disconnected", () => {
-  statusEl.innerText = "Stranger left. Looking for new stranger...";
-  addLine("<i>Stranger disconnected</i>");
-});
+      partnerMetaEl.innerText =
+        `Stranger country: ${partnerProfile.country || "Unknown"} | ` +
+        `Interest: ${partnerProfile.interest || "Any"} | ` +
+        `Language: ${partnerProfile.language || "en"}`;
+    }
 
-socket.io.on("reconnect_attempt", () => {
-  statusEl.innerText = "Reconnecting to server...";
-});
+    async function translateIfNeeded(text) {
+      const auto = document.getElementById("autoTranslate").value;
+      const myLang = currentPrefs().language;
+      const partnerLang = partnerProfile?.language || myLang;
 
-socket.io.on("reconnect", () => {
-  statusEl.innerText = "Reconnected. Looking for stranger...";
-  addLine("<i>Reconnected</i>");
-});
+      if (auto !== "on") return "";
+      if (myLang === partnerLang) return "";
 
-socket.on("disconnect", () => {
-  statusEl.innerText = "Disconnected. Reconnecting...";
-  addLine("<i>Server disconnected</i>");
-});
+      const supported =
+        (myLang === "hi" && partnerLang === "en") ||
+        (myLang === "en" && partnerLang === "hi");
 
-function send() {
-  const text = input.value.trim();
-  if (!text) return;
-  socket.emit("message", text);
-  addLine("<b>You:</b> " + text);
-  input.value = "";
-}
+      if (!supported) return "";
 
-function nextUser() {
-  socket.emit("next");
-  addLine("<i>Searching for next stranger...</i>");
-}
+      try {
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${myLang}|${partnerLang}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        return data?.responseData?.translatedText || "";
+      } catch (_e) {
+        return "";
+      }
+    }
 
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") send();
-});
-</script>
+    async function sendMessage() {
+      const text = msgEl.value.trim();
+      if (!text) return;
 
+      const translatedText = await translateIfNeeded(text);
+
+      socket.emit("message", {
+        text,
+        translatedText,
+        fromLanguage: currentPrefs().language
+      });
+
+      line(
+        `<b>You:</b> ${text}` +
+        (translatedText ? ` <br><span class="small">Translated: ${translatedText}</span>` : "")
+      );
+
+      msgEl.value = "";
+    }
+
+    function joinQueue() {
+      partnerProfile = null;
+      updatePartnerMeta();
+      chatEl.innerHTML = "";
+      socket.emit("join-queue", currentPrefs());
+      updateStatus("Looking for stranger...");
+    }
+
+    function createPeerConnection() {
+      if (peerConnection) peerConnection.close();
+
+      peerConnection = new RTCPeerConnection(rtcConfig);
+
+      peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+          socket.emit("webrtc-ice-candidate", event.candidate);
+        }
+      };
+
+      peerConnection.ontrack = (event) => {
+        remoteAudio.srcObject = event.streams[0];
+      };
+
+      if (localStream) {
+        localStream.getTracks().forEach(track => {
+          peerConnection.addTrack(track, localStream);
+        });
+      }
+
+      return peerConnection;
+    }
+
+    async function ensureLocalAudio() {
+      if (!localStream) {
+        localStream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: false
+        });
+      }
+      return localStream;
+    }
+
+    async function startVoiceCall() {
+      try {
+        await ensureLocalAudio();
+        createPeerConnection();
+
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+
+        socket.emit("webrtc-offer", offer);
+        line("<i>Voice call request sent</i>");
+      } catch (_e) {
+        line("<i>Microphone permission denied or not supported</i>");
+      }
+    }
+
+    function endVoiceCall() {
+      if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+      }
+
+      if (remoteAudio.srcObject) {
+        remoteAudio.srcObject = null;
+      }
+
+      socket.emit("voice-ended");
+      line("<i>Voice call ended</i>");
+    }
+
+    socket.on("connect", () => updateStatus("Connected to server"));
+
+    socket.on("waiting", () => updateStatus("Waiting for stranger..."));
+
+    socket.on("connected", (payload) => {
+      partnerProfile = payload?.partnerProfile || null;
+      updateStatus("Connected to stranger");
+      updatePartnerMeta();
+      line("<b>Connected to stranger</b>");
+    });
+
+    socket.on("message", (payload) => {
+      const text = payload?.text || "";
+      const translatedText = payload?.translatedText || "";
+
+      line(
+        `<b>Stranger:</b> ${text}` +
+        (translatedText ? ` <br><span class="small">Translated: ${translatedText}</span>` : "")
+      );
+    });
+
+    socket.on("partner-disconnected", () => {
+      partnerProfile = null;
+      updatePartnerMeta();
+      updateStatus("Stranger left. Finding a new match...");
+      line("<i>Stranger disconnected</i>");
+      endVoiceCall();
+    });
+
+    socket.on("blocked-by-partner", () => {
+      partnerProfile = null;
+      updatePartnerMeta();
+      updateStatus("Partner left. Finding a new match...");
+      line("<i>Partner blocked or skipped</i>");
+      endVoiceCall();
+    });
+
+    socket.on("report-saved", () => {
+      line("<i>Report saved</i>");
+    });
+
+    socket.on("typing", () => {
+      typingEl.innerText = "Stranger is typing...";
+      setTimeout(() => {
+        typingEl.innerText = "";
+      }, 1200);
+    });
+
+    socket.on("disconnect", () => {
+      updateStatus("Disconnected. Reconnecting...");
+    });
+
+    socket.on("webrtc-offer", async (offer) => {
+      try {
+        await ensureLocalAudio();
+        createPeerConnection();
+
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+
+        socket.emit("webrtc-answer", answer);
+        line("<i>Voice call connected</i>");
+      } catch (_e) {
+        line("<i>Could not accept voice call</i>");
+      }
+    });
+
+    socket.on("webrtc-answer", async (answer) => {
+      try {
+        if (!peerConnection) return;
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+        line("<i>Voice call connected</i>");
+      } catch (_e) {
+        line("<i>Voice answer failed</i>");
+      }
+    });
+
+    socket.on("webrtc-ice-candidate", async (candidate) => {
+      try {
+        if (peerConnection) {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+      } catch (_e) {}
+    });
+
+    socket.on("voice-ended", () => {
+      if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+      }
+
+      if (remoteAudio.srcObject) {
+        remoteAudio.srcObject = null;
+      }
+
+      line("<i>Stranger ended voice call</i>");
+    });
+
+    document.getElementById("startBtn").onclick = joinQueue;
+
+    document.getElementById("nextBtn").onclick = () => {
+      socket.emit("next");
+      line("<i>Searching for next stranger...</i>");
+    };
+
+    document.getElementById("sendBtn").onclick = sendMessage;
+    document.getElementById("voiceBtn").onclick = startVoiceCall;
+    document.getElementById("endVoiceBtn").onclick = endVoiceCall;
+
+    document.getElementById("reportBtn").onclick = () => {
+      socket.emit("report-user", { reason: "user report" });
+    };
+
+    document.getElementById("blockBtn").onclick = () => {
+      socket.emit("block-user");
+    };
+
+    msgEl.addEventListener("keydown", (e) => {
+      socket.emit("typing");
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
 </body>
 </html>
