@@ -3,113 +3,359 @@
 <head>
   <meta name="robots" content="index, follow">
   <meta name="description" content="TalkX is a free anonymous chat platform to talk with strangers in India and worldwide.">
-
-<meta name="keywords" content="chat with strangers India, anonymous chat India, random chat, talkx">
+  <meta name="keywords" content="chat with strangers India, anonymous chat India, random chat, talkx">
   <meta name="google-site-verification" content="MNw4m3CjpORKt1HCIroQtfQmh_MIsu6zCpMhah14JPM" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TalkX - Chat with strangers in India</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background: #0f0f0f;
-      color: white;
-      font-family: Arial, sans-serif;
       margin: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+      background:
+        radial-gradient(circle at top, rgba(88, 99, 255, 0.25), transparent 30%),
+        linear-gradient(180deg, #11184a 0%, #171538 45%, #0c1024 100%);
+      min-height: 100vh;
       padding: 16px;
     }
+
     .wrap {
-      max-width: 900px;
+      max-width: 430px;
       margin: 0 auto;
     }
-    .card {
-      background: #121212;
-      border: 1px solid #2b2b2b;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0 18px;
     }
-    h1, h2, p {
-      margin-top: 0;
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .grid {
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 22px;
+      box-shadow: 0 0 18px rgba(99, 102, 241, 0.35);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .brand-text {
+      line-height: 1.1;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: 0.4px;
+    }
+
+    .brand-text p {
+      margin: 3px 0 0;
+      color: #bfc7ff;
+      font-size: 12px;
+    }
+
+    .menu {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.05);
+      font-size: 24px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(109, 133, 255, 0.6);
+      background: rgba(77, 102, 255, 0.12);
+      color: #aebdff;
+      font-size: 13px;
+      margin-bottom: 18px;
+      box-shadow: 0 0 18px rgba(88, 99, 255, 0.18);
+    }
+
+    .hero-circle {
+      width: 230px;
+      height: 230px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 35% 30%, #707cff, #3f46d4 58%, #242a7d 100%);
+      box-shadow:
+        0 0 40px rgba(104, 112, 255, 0.28),
+        inset 0 0 35px rgba(255,255,255,0.08);
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: 42px;
+      line-height: 1.05;
+      font-weight: 800;
+    }
+
+    .hero h2 span {
+      color: #8f96ff;
+      display: block;
+    }
+
+    .hero-desc {
+      margin: 16px auto 0;
+      color: #c7cdf8;
+      font-size: 17px;
+      line-height: 1.6;
+      max-width: 360px;
+    }
+
+    .panel {
+      background: rgba(13, 16, 40, 0.78);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      backdrop-filter: blur(6px);
+    }
+
+    .status-line {
+      text-align: center;
+      font-size: 16px;
+      color: #d0d4ff;
+      margin-bottom: 10px;
+      min-height: 22px;
+    }
+
+    .partner-meta {
+      text-align: center;
+      font-size: 13px;
+      color: #98a1dd;
+      margin-bottom: 10px;
+      min-height: 18px;
+    }
+
+    .filters {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
+      margin-bottom: 14px;
     }
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
+
+    .filters .full {
+      grid-column: 1 / -1;
     }
-    @media (max-width: 700px) {
-      .grid, .grid-3 {
-        grid-template-columns: 1fr;
-      }
-    }
-    input, select, button, textarea {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #343434;
-      background: #1a1a1a;
-      color: white;
-      margin-top: 6px;
-    }
-    button {
-      cursor: pointer;
-    }
-    .primary {
-      background: #1f7a36;
-      border: none;
-    }
-    .secondary {
-      background: #373737;
-      border: none;
-    }
-    .danger {
-      background: #7c2222;
-      border: none;
-    }
-    #chat {
-      height: 330px;
-      overflow: auto;
-      background: #0d0d0d;
-      border: 1px solid #2e2e2e;
-      border-radius: 12px;
-      padding: 12px;
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: #bcc3ff;
+      margin-bottom: 6px;
       text-align: left;
     }
-    .row {
+
+    input, select, button {
+      width: 100%;
+      border: none;
+      outline: none;
+      border-radius: 14px;
+      padding: 14px 14px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    input, select {
+      background: rgba(255,255,255,0.06);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    option {
+      color: black;
+    }
+
+    .big-btn {
+      background: linear-gradient(90deg, #ff7d2d, #ffb03a);
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 8px 28px rgba(255, 147, 44, 0.28);
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .icon-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: white;
+      min-height: 96px;
       display: flex;
+      flex-direction: column;
+      justify-content: center;
       gap: 8px;
+      border-radius: 20px;
     }
-    .row > * {
-      flex: 1;
+
+    .icon-btn.primary {
+      background: rgba(50, 197, 107, 0.16);
+      border: 1px solid rgba(50, 197, 107, 0.25);
     }
-    #status {
-      color: #c6c6c6;
-      min-height: 24px;
+
+    .icon-btn.warn {
+      background: rgba(255, 183, 0, 0.14);
+      border: 1px solid rgba(255, 183, 0, 0.20);
     }
-    .small {
-      color: #a6a6a6;
+
+    .icon {
+      font-size: 28px;
+    }
+
+    .icon-label {
       font-size: 14px;
     }
+
+    #chat {
+      height: 250px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.16);
+      border-radius: 18px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    #chat p {
+      margin: 0 0 12px;
+    }
+
+    .message-row {
+      display: grid;
+      grid-template-columns: 1fr 108px;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .send-btn {
+      background: #2fb15b;
+      color: white;
+      font-weight: 700;
+    }
+
+    .small-text {
+      color: #aeb4e7;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #typing {
+      color: #9fb0ff;
+      font-size: 13px;
+      min-height: 18px;
+      margin-top: 8px;
+      text-align: left;
+    }
+
     audio {
       width: 100%;
-      margin-top: 10px;
+      margin-top: 14px;
+      border-radius: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .controls-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .message-row {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h2 {
+        font-size: 34px;
+      }
+
+      .hero-circle {
+        width: 190px;
+        height: 190px;
+        font-size: 60px;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="card">
-      <h1>TalkX Pro 🌍</h1>
-      <p>Anonymous stranger chat with voice, filters, translation, and safety tools.</p>
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-logo">T</div>
+        <div class="brand-text">
+          <h1>TalkX</h1>
+          <p>Voice + Chat</p>
+        </div>
+      </div>
+      <div class="menu">☰</div>
+    </div>
 
-      <div class="grid-3">
+    <div class="hero">
+      <div class="badge">🏆 Premium random chat experience</div>
+      <div class="hero-circle">T</div>
+      <h2>Talk to Strangers Online <span>Voice + Chat</span></h2>
+      <div class="hero-desc">
+        Anonymous random chat with people worldwide — no signup, no camera needed. Just start talking.
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="status-line" id="status">Not connected</div>
+      <div class="partner-meta" id="partnerMeta">No stranger yet</div>
+
+      <div class="filters">
         <div>
-          <label>Your country</label>
+          <label for="country">Your country</label>
           <select id="country">
             <option value="India">India</option>
             <option value="USA">USA</option>
@@ -124,7 +370,7 @@
         </div>
 
         <div>
-          <label>Find people from</label>
+          <label for="targetCountry">Find people from</label>
           <select id="targetCountry">
             <option value="">Any country</option>
             <option value="India">India</option>
@@ -140,67 +386,71 @@
         </div>
 
         <div>
-          <label>Your language</label>
+          <label for="language">Your language</label>
           <select id="language">
             <option value="en">English</option>
             <option value="hi">Hindi</option>
           </select>
         </div>
-      </div>
 
-      <div class="grid">
         <div>
-          <label>Interest</label>
-          <input id="interest" placeholder="music, gaming, travel" />
-        </div>
-        <div>
-          <label>Auto translate</label>
+          <label for="autoTranslate">Auto translate</label>
           <select id="autoTranslate">
             <option value="on">On</option>
             <option value="off">Off</option>
           </select>
         </div>
+
+        <div class="full">
+          <label for="interest">Interest</label>
+          <input id="interest" placeholder="music, gaming, friendship, travel">
+        </div>
       </div>
 
-      <div class="row" style="margin-top:10px;">
-        <button class="primary" id="startBtn">Start chat</button>
-        <button class="secondary" id="nextBtn">Next stranger</button>
+      <button class="big-btn" id="startBtn">Start Voice + Chat</button>
+
+      <div class="controls-grid">
+        <button class="icon-btn primary" id="voiceBtn">
+          <div class="icon">📞</div>
+          <div class="icon-label">Call</div>
+        </button>
+
+        <button class="icon-btn" id="endVoiceBtn">
+          <div class="icon">🎙️</div>
+          <div class="icon-label">Mute / End</div>
+        </button>
+
+        <button class="icon-btn" id="nextBtn">
+          <div class="icon">➕</div>
+          <div class="icon-label">Next</div>
+        </button>
+
+        <button class="icon-btn warn" id="reportBtn">
+          <div class="icon">⚠️</div>
+          <div class="icon-label">Report</div>
+        </button>
       </div>
 
-      <p class="small">Translation supports Hindi ↔ English in this version.</p>
-    </div>
-
-    <div class="card">
-      <h2>Status</h2>
-      <div id="status">Not connected</div>
-      <div id="partnerMeta" class="small">No stranger yet</div>
-    </div>
-
-    <div class="card">
-      <h2>Voice chat</h2>
-      <div class="row">
-        <button class="primary" id="voiceBtn">Start voice call</button>
-        <button class="secondary" id="endVoiceBtn">End voice call</button>
-      </div>
+      <div class="small-text">Allow microphone access when your browser asks.</div>
       <audio id="remoteAudio" autoplay playsinline controls></audio>
-      <div class="small">Allow microphone access when your browser asks.</div>
     </div>
 
-    <div class="card">
-      <h2>Chat</h2>
+    <div class="panel">
       <div id="chat"></div>
-      <div class="row" style="margin-top:10px;">
-        <input id="msg" placeholder="Type message..." />
-        <button class="primary" id="sendBtn">Send</button>
+      <div id="typing"></div>
+
+      <div class="message-row">
+        <input id="msg" placeholder="Type message...">
+        <button class="send-btn" id="sendBtn">Send</button>
       </div>
-      <div class="small" id="typing"></div>
+
+      <div class="small-text">Hindi ↔ English translation supported in this version.</div>
     </div>
 
-    <div class="card">
-      <h2>Safety</h2>
-      <div class="row">
-        <button class="secondary" id="reportBtn">Report</button>
-        <button class="danger" id="blockBtn">Block</button>
+    <div class="panel">
+      <div class="small-text">Be respectful. Do not share personal information. Block or report bad users.</div>
+      <div style="margin-top:12px;">
+        <button class="icon-btn" id="blockBtn" style="min-height:auto;padding:14px;">Block user</button>
       </div>
     </div>
   </div>
@@ -382,7 +632,6 @@
     }
 
     socket.on("connect", () => updateStatus("Connected to server"));
-
     socket.on("waiting", () => updateStatus("Waiting for stranger..."));
 
     socket.on("connected", (payload) => {
