@@ -22,7 +22,9 @@
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 
 <script>
-const socket = io("https://talkx.onrender.com");
+const socket = io("https://talkx.onrender.com", {
+  transports: ["websocket", "polling"]
+});
 
 const chat = document.getElementById("chat");
 
