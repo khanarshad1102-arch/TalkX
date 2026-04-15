@@ -1,48 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TalkX</title>
   <style>
-    body { background:#0f0f0f; color:white; text-align:center; font-family:Arial; }
-    #chat { height:300px; overflow:auto; border:1px solid #333; margin:20px; padding:10px; }
-    input { padding:10px; width:70%; background:#1a1a1a; color:white; border:none; }
-    button { padding:10px; background:#4caf50; color:white; border:none; }
+    body {
+      background: #0f0f0f;
+      color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .wrap {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    #status {
+      margin: 12px 0;
+      color: #bbbbbb;
+    }
+    #chat {
+      height: 320px;
+      overflow: auto;
+      border: 1px solid #333;
+      margin: 20px 0;
+      padding: 12px;
+      text-align: left;
+      background: #111;
+      border-radius: 10px;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+    input {
+      flex: 1;
+      padding: 12px;
+      background: #1a1a1a;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 8px;
+    }
+    button {
+      padding: 12px 14px;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 8px;
+    }
+    .secondary {
+      background: #444;
+    }
+    .note {
+      margin-top: 14px;
+      color: #aaa;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
+  <div class="wrap">
+    <h1>TalkX 🌍</h1>
+    <p>Anonymous Global Chat</p>
+    <div id="status">Connecting...</div>
+    <div id="chat"></div>
+    <div class="controls">
+      <input id="msg" placeholder="Type message..." />
+      <button onclick="send()">Send</button>
+      <button class="secondary" onclick="nextUser()">Next</button>
+    </div>
+    <div class="note">Voice chat is not added in this version yet.</div>
+  </div>
 
-<h1>TalkX 🌍</h1>
-<p>Anonymous Global Chat</p>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    const socket = io("https://talkx.onrender.com", {
+      transports: ["websocket", "polling"]
+    });
 
-<div id="chat"></div>
+    const chat = document.getElementById("chat");
+    const statusEl = document.getElementById("status");
+    const input = document.getElementById("msg");
 
-<input id="msg" placeholder="Type message..." />
-<button onclick="send()">Send</button>
+    function addLine(html) {
+      chat.innerHTML += "<p>" + html + "</p>";
+      chat.scrollTop = chat.scrollHeight;
+    }
 
-<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    socket.on("connect", () => {
+      statusEl.innerText = "Connected to server";
+    });
 
-<script>
-const socket = io("https://talkx.onrender.com", {
-  transports: ["websocket", "polling"]
-});
+    socket.on("waiting", () => {
+      statusEl.innerText = "Waiting for stranger...";
+      addLine("<i>Waiting for stranger...</i>");
+    });
 
-const chat = document.getElementById("chat");
+    socket.on("connected", () => {
+      statusEl.innerText = "Connected to stranger";
+      addLine("<b>Connected to stranger</b>");
+    });
 
-socket.on("connected", () => {
-  chat.innerHTML += "<p><i>Connected to stranger</i></p>";
-});
+    socket.on("message", (msg) => {
+      addLine("<b>Stranger:</b> " + msg);
+    });
 
-socket.on("message", (msg) => {
-  chat.innerHTML += "<p><b>Stranger:</b> " + msg + "</p>";
-});
+    socket.on("partner-disconnected", () => {
+      statusEl.innerText = "Stranger left. Looking for new stranger...";
+      addLine("<i>Stranger disconnected</i>");
+    });
 
-function send() {
-  const input = document.getElementById("msg");
-  socket.emit("message", input.value);
-  chat.innerHTML += "<p><b>You:</b> " + input.value + "</p>";
-  input.value = "";
-}
-</script>
+    socket.on("disconnect", () => {
+      statusEl.innerText = "Disconnected from server";
+      addLine("<i>Server disconnected</i>");
+    });
 
+    function send() {
+      const text = input.value.trim();
+      if (!text) return;
+      socket.emit("message", text);
+      addLine("<b>You:</b> " + text);
+      input.value = "";
+    }
+
+    function nextUser() {
+      socket.emit("next");
+      addLine("<i>Searching for next stranger...</i>");
+    }
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") send();
+    });
+  </script>
 </body>
 </html>
