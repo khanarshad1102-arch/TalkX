@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TalkX</title>
   <style>
     body {
@@ -20,6 +20,7 @@
     #status {
       margin: 12px 0;
       color: #bbbbbb;
+      min-height: 28px;
     }
     #chat {
       height: 320px;
@@ -61,78 +62,99 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>TalkX 🌍</h1>
-    <p>Anonymous Global Chat</p>
-    <div id="status">Connecting...</div>
-    <div id="chat"></div>
-    <div class="controls">
-      <input id="msg" placeholder="Type message..." />
-      <button onclick="send()">Send</button>
-      <button class="secondary" onclick="nextUser()">Next</button>
-    </div>
-    <div class="note">Voice chat is not added in this version yet.</div>
+
+<div class="wrap">
+  <h1>TalkX 🌍</h1>
+  <p>Anonymous Global Chat</p>
+
+  <div id="status">Connecting...</div>
+  <div id="chat"></div>
+
+  <div class="controls">
+    <input id="msg" placeholder="Type message..." />
+    <button onclick="send()">Send</button>
+    <button class="secondary" onclick="nextUser()">Next</button>
   </div>
 
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-  <script>
-    const socket = io("https://talkx.onrender.com", {
-      transports: ["websocket", "polling"]
-    });
+  <div class="note">Voice chat will be added next 🚀</div>
+</div>
 
-    const chat = document.getElementById("chat");
-    const statusEl = document.getElementById("status");
-    const input = document.getElementById("msg");
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
-    function addLine(html) {
-      chat.innerHTML += "<p>" + html + "</p>";
-      chat.scrollTop = chat.scrollHeight;
-    }
+<script>
+const socket = io("https://talkx.onrender.com", {
+  transports: ["websocket", "polling"],
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  timeout: 20000
+});
 
-    socket.on("connect", () => {
-      statusEl.innerText = "Connected to server";
-    });
+const chat = document.getElementById("chat");
+const statusEl = document.getElementById("status");
+const input = document.getElementById("msg");
 
-    socket.on("waiting", () => {
-      statusEl.innerText = "Waiting for stranger...";
-      addLine("<i>Waiting for stranger...</i>");
-    });
+function addLine(html) {
+  chat.innerHTML += "<p>" + html + "</p>";
+  chat.scrollTop = chat.scrollHeight;
+}
 
-    socket.on("connected", () => {
-      statusEl.innerText = "Connected to stranger";
-      addLine("<b>Connected to stranger</b>");
-    });
+socket.on("connect", () => {
+  statusEl.innerText = "Connected to server";
+  addLine("<i>Connected to server</i>");
+});
 
-    socket.on("message", (msg) => {
-      addLine("<b>Stranger:</b> " + msg);
-    });
+socket.on("waiting", () => {
+  statusEl.innerText = "Waiting for stranger...";
+  addLine("<i>Waiting for stranger...</i>");
+});
 
-    socket.on("partner-disconnected", () => {
-      statusEl.innerText = "Stranger left. Looking for new stranger...";
-      addLine("<i>Stranger disconnected</i>");
-    });
+socket.on("connected", () => {
+  statusEl.innerText = "Connected to stranger";
+  addLine("<b>Connected to stranger</b>");
+});
 
-    socket.on("disconnect", () => {
-      statusEl.innerText = "Disconnected from server";
-      addLine("<i>Server disconnected</i>");
-    });
+socket.on("message", (msg) => {
+  addLine("<b>Stranger:</b> " + msg);
+});
 
-    function send() {
-      const text = input.value.trim();
-      if (!text) return;
-      socket.emit("message", text);
-      addLine("<b>You:</b> " + text);
-      input.value = "";
-    }
+socket.on("partner-disconnected", () => {
+  statusEl.innerText = "Stranger left. Looking for new stranger...";
+  addLine("<i>Stranger disconnected</i>");
+});
 
-    function nextUser() {
-      socket.emit("next");
-      addLine("<i>Searching for next stranger...</i>");
-    }
+socket.io.on("reconnect_attempt", () => {
+  statusEl.innerText = "Reconnecting to server...";
+});
 
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") send();
-    });
-  </script>
+socket.io.on("reconnect", () => {
+  statusEl.innerText = "Reconnected. Looking for stranger...";
+  addLine("<i>Reconnected</i>");
+});
+
+socket.on("disconnect", () => {
+  statusEl.innerText = "Disconnected. Reconnecting...";
+  addLine("<i>Server disconnected</i>");
+});
+
+function send() {
+  const text = input.value.trim();
+  if (!text) return;
+  socket.emit("message", text);
+  addLine("<b>You:</b> " + text);
+  input.value = "";
+}
+
+function nextUser() {
+  socket.emit("next");
+  addLine("<i>Searching for next stranger...</i>");
+}
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") send();
+});
+</script>
+
 </body>
 </html>
